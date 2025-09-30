@@ -1,47 +1,67 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-from pathlib import Path
+st.divider()
+st.header('Streamlit 주요 요소 예시', divider='rainbow')
+st.write("아래는 Streamlit에서 사용할 수 있는 다양한 UI 요소들의 예시입니다.")
 
-# 페이지 기본 설정 (가장 처음에 한 번만 호출해야 합니다)
-st.set_page_config(
-    page_title='종합 대시보드',
-    page_icon=':chart_with_upwards_trend:',
-    layout='wide'
-)
+with st.expander("예시 펼쳐보기"):
+    # 텍스트 요소
+    st.subheader('텍스트 요소')
+    st.write('일반 텍스트(write)')
+    st.markdown('**마크다운**을 이용한 _텍스트_')
+    st.code("print('Hello Streamlit!')", language='python')
 
-# -----------------------------------------------------------------------------
-# 1. GDP 대시보드 섹션
-# -----------------------------------------------------------------------------
+    # 데이터 표시
+    st.subheader('데이터 표시')
+    df_example = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+    st.dataframe(df_example)
+    st.table(df_example)
 
-st.title(':earth_americas: GDP 대시보드')
-st.markdown("""
-[World Bank Open Data](https://data.worldbank.org/)의 GDP 데이터를 살펴보세요.
-데이터는 2022년까지이며, 일부 연도의 데이터는 누락될 수 있습니다.
-""")
+    # Matplotlib 차트 표시
+    st.subheader('Matplotlib 차트')
+    fig, ax = plt.subplots()
+    ax.plot(df_example['A'], df_example['B'])
+    ax.set_title("Matplotlib Chart Example")
+    ax.set_xlabel("X-axis")
+    ax.set_ylabel("Y-axis")
+    st.pyplot(fig)
 
-# 데이터 로딩 함수 (캐싱 기능으로 성능 향상)
-@st.cache_data
-def get_gdp_data():
-    """CSV 파일에서 GDP 데이터를 가져옵니다."""
-    # 데이터 파일 경로 설정 (데이터 파일은 코드 파일과 같은 폴더 내 'data' 폴더에 있다고 가정)
-    # 만약 data 폴더가 없다면 이 부분은 실제 파일 위치에 맞게 수정해야 합니다.
-    try:
-        DATA_FILENAME = Path(__file__).parent / 'data/gdp_data.csv'
-        raw_gdp_df = pd.read_csv(DATA_FILENAME)
-    except FileNotFoundError:
-        st.error("'data/gdp_data.csv' 파일을 찾을 수 없습니다. 파일 경로를 확인해주세요.")
-        return pd.DataFrame() # 파일이 없으면 빈 데이터프레임 반환
+    # 미디어 요소
+    st.subheader('미디어 요소')
+    st.image('https://static.streamlit.io/examples/dog.jpg', caption='강아지 이미지', width=300)
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+    # 입력 위젯
+    st.subheader('입력 위젯')
+    st.text_input('이름을 입력하세요')
+    st.number_input('나이', min_value=0, max_value=120, value=25)
+    st.checkbox('동의하십니까?')
+    st.radio('좋아하는 색상은?', ['빨강', '파랑', '초록'])
+    st.selectbox('취미를 선택하세요', ['독서', '운동', '게임'])
+    st.multiselect('여러 취미를 선택하세요', ['독서', '운동', '게임'])
+    st.date_input('날짜를 선택하세요')
+    st.time_input('시간을 선택하세요')
+    st.file_uploader('파일을 업로드하세요')
+    st.button('클릭 버튼')
 
-    # 데이터 구조를 (Country, Year, GDP) 형태로 변환 (Melt)
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+    # 슬라이더
+    st.subheader('슬라이더')
+    st.slider('값을 선택하세요', 0, 100, 50)
+
+    # 레이아웃
+    st.subheader('레이아웃')
+    col1, col2 = st.columns(2)
+    col1.write('왼쪽 컬럼')
+    col2.write('오른쪽 컬럼')
+
+    tab1, tab2 = st.tabs(['탭 1', '탭 2'])
+    tab1.write('첫 번째 탭 내용')
+    tab2.write('두 번째 탭 내용')
+
+    # 상태 표시
+    st.subheader('상태 표시')
+    st.progress(70)
+    with st.spinner('로딩 중...'):
+        st.write("처리 완료!")
+
+    st.success('성공 메시지')
+    st.error('에러 메시지')
+    st.warning('경고 메시지')
+    st.info('정보 메시지')
