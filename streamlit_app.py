@@ -1,3 +1,7 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
 st.divider()
 st.header('Streamlit 주요 요소 예시', divider='rainbow')
 st.write("아래는 Streamlit에서 사용할 수 있는 다양한 UI 요소들의 예시입니다.")
